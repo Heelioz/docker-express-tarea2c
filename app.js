@@ -4,7 +4,7 @@ let directory = undefined;
 
 const storeData = () => {
   try {
-    fs.writeFileSync('/var/docker-express-state.json', JSON.stringify({directory: directory}))
+    fs.writeFileSync('/var/docker-express/docker-express-state.json', JSON.stringify({directory: directory}))
   } catch (err) {
     console.error(err)
   }
@@ -12,7 +12,7 @@ const storeData = () => {
 
 const loadData = () => {
   try {
-    return JSON.parse(fs.readFileSync('/var/docker-express-state.json', 'utf8')).directory
+    return JSON.parse(fs.readFileSync('/var/docker-express/docker-express-state.json', 'utf8')).directory
   } catch (err) {
     console.error(err)
     return []

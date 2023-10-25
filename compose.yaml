@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  express-app:
+    build: .
+    restart: always
+    volumes:
+      - persist_data:/var/docker-express
+    ports:
+      - 8083:3000
+    networks:
+      - express_net
+
+volumes:
+  persist_data:
+
+networks:
+  express_net:
+
