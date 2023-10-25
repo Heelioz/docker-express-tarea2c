@@ -1,7 +1,28 @@
+const fs = require('fs')
+
+let directory = undefined;
+
+const storeData = () => {
+  try {
+    fs.writeFileSync('/var/docker-express-state.json', JSON.stringify({directory: directory}))
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+const loadData = () => {
+  try {
+    return JSON.parse(fs.readFileSync('/var/docker-express-state.json', 'utf8')).directory
+  } catch (err) {
+    console.error(err)
+    return []
+  }
+}
+directory = loadData()
+
 const express = require('express')
 const app = express()
 const port = 3000
-let directory = [];
 
 app.use(express.json())
 
@@ -42,6 +63,7 @@ app.post('/directories/', (req, res) => {
     newObject.id = directory.at(-1).id + 1;
   }
   directory.push(newObject);
+  storeData();
   res.json({result: 'success'})
 })
 
@@ -63,6 +85,7 @@ app.put('/directories/:id', (req, res) => {
       let newObject = req.body;
       newObject.id = objId;
       directory[i] = newObject;
+      storeData();
       res.json({result: 'success'});
       return
     }
@@ -83,6 +106,7 @@ app.patch('/directories/:id', (req, res) => {
           console.log(`obj ${objId} change emails ['${directory[i].emails.toString()}'] => [${newModObject.emails.toString()}]`);
           directory[i].emails = newModObject.emails
         }
+        storeData();
         res.json({result: 'success'});
         return
       }
@@ -95,6 +119,7 @@ app.delete('/directories/:id', (req, res) => {
     for (i = 0; i < directory.length; i++) {
       if (directory[i].id == objId) {
         directory.splice(i, 1);
+        storeData();
         res.json({result: 'success'});
         return
       }
